@@ -1,0 +1,36 @@
+let fakst1= flase;
+let falsey2= 0;
+
+let fakst4= null;
+let fakst5 undefined NAN,
+//falsy er notað með ==
+let breyta={1,2,3,4}
+while(breyta){
+    console .log(breyta.pop());
+}
+
+
+do while gerir alltaf einu sinni og checkar síðan en while checkar fyrst
+
+arrow function  const coolSquare =(x,r,s)=>{
+    return x*x;
+} erum ekki að fara að nota :)
+
+.toUpperCase();
+
+foo.push('foo')
+foo.join(' , ') console.log(listi.join(', '))
+foo.pop(); færð aftasta gildið og tekur það úr listanum
+
+let hlutur = {
+    nafn1:'gildi'
+    nafn2: true,
+    nafn3: [1,2,3,4,5],
+}
+console.log(hlutur.nafn2);
+
+let{nafn1,nafn3}=hlutur;
+console.log(nafn2);
+
+
+
