@@ -1,61 +1,56 @@
 const ENTER_KEYCODE = 13;
 
-document.addEventListener('DOMContentLoaded', () => { //gera stuff og þá er ekki fyrir neðan bara function gera stuff fyrir neðan neðan) //þú ætlar að gera eitthvað þegar eitthvað gerist, þegar skjarinn opnar, kállar á form og items
-  const form = document.querySelector('.form'); //dom getur verið klikk líka
+document.addEventListener('DOMContentLoaded', () => { 
+  const form = document.querySelector('.form'); 
   const items = document.querySelector('.items');
 
   text.init(form, items);
 });
-/*
-function gerastuff(){
-  const form = document.querySelector('.form'); //dom getur verið klikk líka
-  const items = document.querySelector('.items');
-
-  text.init(form, items);
-});
-
-*/
-
 
 const text = (() => {
   let items;
 
   function init(_form, _items) {
     items = _items; //items eru ul
-    _form.addEventListener('submit', formHandler); //þegar takki inn í forminu þegar þú ýtir á takkka þá framkallast submit, formHandlar gerist
-
-    console.log(_items); //þetta er orðið bryeta út af query Selsctor , fyrir sama og þú kallar hlutinn í html
-    console.log(_form);
+    _form.addEventListener('submit', formHandler); 
    
-    const itemList= items.querySelectorAll('.item');//þá færðu lista annars færðu bara einn
-    console.log(itemList[0]); //þá færðu fyrsta li en þarft ekki að hafa kassa þá er allt
+    const itemList= items.querySelectorAll('.item');
 
     for(let i=0; i<itemList.length;i++){
-      const checkbox=itemList[i].querySelector('.item__checkbox');
+      const checkbox = itemList[i].querySelector('.item__checkbox');
       const text = itemList[i].querySelector('.item__text');
-      const button = itemList[i].querySelector('.item__button');
+      const itButton = itemList[i].querySelector('.item__button');
 
       checkbox.addEventListener('click', finish);
       text.addEventListener('click', edit);
-      button.addEventListener('click', deleteItem);
+      itButton.addEventListener('click', deleteItem);
     }
-
-
-
+    const formButton = document.querySelector('.form__button');
+    formButton.addEventListener('click',add);
   }
 
-  function formHandler(e) { //þetta á bara að vera    stja eventListener á allt asem við ýtum á 
+  function formHandler(e) { 
     e.preventDefault();
 
-    console.log('halló heimur');
-  }
+   console.log('formHandler');
+
+   /*   Virkni sem hefði átt að stoppa mann í að setja tóma línu
+   const{target}=e;
+   const{parentNode}=target;
+   const inntak=parentNode.querySelector('.form__input');
+   if(inntak.value.trim()){
+     let some=add(target);
+     inntak.value='';
+   }
+   */
+  
+}
 
   // event handler fyrir það að klára færslu
-  function finish(e) { //hakið                                      langar að gera það blátt
+  function finish(e) { //hakið 
     console.log('finish');
     const {target} = e;
-    target.parentNode.classList.toggle('item--done');//ef hluturinn hefur það þá taka annars bæta við :) classList.toggle!!!!!
-    //ef heldur .item__text og hefur .item--done
+    target.parentNode.classList.toggle('item--done');
   }
 
   // event handler fyrir það að breyta færslu
@@ -65,99 +60,94 @@ const text = (() => {
     const{textContent, parentNode} = target;
 
     parentNode.removeChild(target);
-    //viljum bæta við í staðin
 
-   // let input= el('input','item__edit');//ekki punktur bæta við klass , velja einhvað punktur
-
-   let input = document.createElement('input');
-   input.classList.add('item__edit');
+   let input= el('input','item__edit');
    input.addEventListener('keyup', commit);
    input.setAttribute('type', 'text');
    input.value = textContent;
 
-   const button = parentNode.querySelector('.item__button'); //velaja takkann
-  parentNode.insertBefore(input,button); //getum editað
+   const itButton = parentNode.querySelector('.item__button');
+    parentNode.insertBefore(input,itButton); 
   
-  input.focus(); //bendillinn á þessu
-
-    //console.log(target);//12.52
+    input.focus(); //bendillinn á þessu
+    
   }
 
   // event handler fyrir það að klára að breyta færslu
-  function commit(e) {//kallað á það þegar takka er sleppt upp
+  function commit(e) {
+  const{target}=e;
+  const{parentNode}=target;
+  const {keyCode} = e;
+  let texti;
+ 
 
-    const{keycode}= e;
-
-    if (keycode=== ENTER_KEYCODE){
+    if (keyCode=== ENTER_KEYCODE){
       console.log('ENTER WAS PRESSED');
-    }
+      texti=target.value;
+      console.log(texti);
 
-  }
+      const span = el('span','item__text',edit);
+      
+      parentNode.removeChild(target);
+
+      const txt = document.createTextNode(texti)
+      span.appendChild(txt);
+
+      let button = parentNode.querySelector('.item__button');
+      parentNode.insertBefore(span,button);
+    }
+}
 
   // fall sem sér um að bæta við nýju item
   function add(value) {
-    checkbox.removeEventListener('click',finish); //þetta á að vera í ollu!!!!
+  console.log('hallo');
+   let newStuff= document.querySelector('.form__input').value;
+   const newItem = el('li','item',null);
+   const newInput = el('input','item__checkbox',finish);
+   newInput.setAttribute('type','checkbox') ;
+   const newText = el('span','item__text',edit);
+   newText.appendChild(document.createTextNode(newStuff));
+   const newButton = el('button','item__button',deleteItem)
+   newButton.appendChild(document.createTextNode("Eyða"));
 
+   newItem.appendChild(newInput);
+   newItem.appendChild(newText);
+   newItem.appendChild(newButton);
+   console.log(newItem);
+
+   const newUl= document.querySelector('.items');
+   newUl.appendChild(newItem);
+  
   }
 
   // event handler til að eyða færslu
-  function deleteItem(e) {
-    console.log(e);//þurfum ekki að hafa þetta þarna samt 
-    const { target }= e;      //const breyta= e.target   //terget sýnir á hvaða takka var ýtt á 
-    const parent = target.parentNode; //skilar því sem heldur utan um það
+function deleteItem(e) {
+  const { target }= e;      
+  const parent = target.parentNode; 
 
-    let checkbox= parent.querySelector('.item__checkbox');
-    checkbox.removeEventListener('click',finish); //þetta á að vera í ollu!!!!
+  let checkbox= parent.querySelector('.item__checkbox');
+  checkbox.removeEventListener('click',finish); 
 
-    parent.parentNode.removeChild(target); //takkinn er inni í breytu    parent.parentNode.removeCHid(parent ) þá hverfur línan
-  
-  
-  
-  }
+  parent.parentNode.removeChild(parent);
+}
 
   // hjálparfall til að útbúa element
-  function el(type, className, clickHandler) {//útfæra element miðað við þessar breytur  //búa til eitthvða element þá eigum við alltaf að kalla á þetta fall
-    //bua til div
-    let div= document.createElement('div');
+function el(type, className, clickHandler) {
+const element= document.createElement(type);
     
-    if (className){
-      //bæta við class
-    }
+if (className){
+  element.setAttribute('class',className);
+}
 
-    //gefa class
-    div.classList.add('container');  //
-
-    if (clickHandler){
-      //bæta við cklickhandler
-    }
+if (clickHandler){
+  element.addEventListener('click', clickHandler);
+}
     
-    div.addEventListener('click', add);  // functionið sem ég vil
-    
-    return div;
+  return element;
 
   }
-  //el('div','container', add) //container er klasinn
 
   return {
     init: init
   }
 })();
-
-
-
-
-/*
-búa til element
-let element = document.createElement('span'); Yta á enter kalla á element þá er span 
-bæta texta við span hlutinn 
-element.appendChild(document.createTextNode('Suprise!!!'));     henda einhverju í þetta
-
-let thebody= querySelector ('body'); thebody/htmlbod
-htmlbod     <body>
-htmlbod.appendChild(element);   <span> þá ter komið surprise!!!!!!
-
-
-create el = document.createElement('div')
-el.classList.add('container');
-el      div class="container" jeiiiiiiii
-*/
